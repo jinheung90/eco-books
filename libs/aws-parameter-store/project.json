@@ -1,0 +1,20 @@
+{
+  "name": "aws-parameter-store",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/aws-parameter-store/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/aws-parameter-store",
+        "tsConfig": "libs/aws-parameter-store/tsconfig.lib.json",
+        "packageJson": "libs/aws-parameter-store/package.json",
+        "main": "libs/aws-parameter-store/src/index.ts",
+        "assets": ["libs/aws-parameter-store/*.md"]
+      }
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "chat-ws-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "implicitDependencies": ["chat-ws"],
+  "targets": {
+    "e2e": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{e2eProjectRoot}"],
+      "options": {
+        "jestConfig": "apps/chat-ws-e2e/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "dependsOn": ["chat-ws:build"]
+    }
+  }
+}

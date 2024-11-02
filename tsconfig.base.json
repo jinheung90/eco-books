@@ -14,7 +14,17 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@eco-books/auth-core": ["libs/auth-core/src/index.ts"],
+      "@eco-books/aws-parameter-store": [
+        "libs/aws-parameter-store/src/index.ts"
+      ],
+      "@eco-books/chat-core": ["libs/chat-core/src/index.ts"],
+      "@eco-books/external-clients": ["libs/external-clients/src/index.ts"],
+      "@eco-books/health-core": ["libs/health-core/src/index.ts"],
+      "@eco-books/type-common": ["libs/type-common/src/index.ts"],
+      "@eco-books/winston-logger": ["libs/winston-logger/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
