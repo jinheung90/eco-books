@@ -1,0 +1,28 @@
+{
+  "name": "eco-books",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/eco-books/src",
+  "projectType": "application",
+  "tags": [],
+  "targets": {
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "dependsOn": [
+        "build"
+      ],
+      "options": {
+        "buildTarget": "eco-books:build",
+        "runBuildTargetDependencies": false
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "eco-books:build:development"
+        },
+        "production": {
+          "buildTarget": "eco-books:build:production"
+        }
+      }
+    }
+  }
+}
