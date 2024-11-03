@@ -13,8 +13,6 @@
     "lib": ["es2020", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
-    "noImplicitAny": false,
-    "strictNullChecks": false,
     "baseUrl": ".",
     "paths": {
       "@eco-books/auth-core": ["libs/auth-core/src/index.ts"],

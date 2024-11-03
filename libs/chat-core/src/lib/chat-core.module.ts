@@ -1,7 +1,12 @@
-import { Logger, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
+
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { CacheModule } from '@nestjs/cache-manager';
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { RedisClientOptions } from 'redis';
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { redisStore } from 'cache-manager-redis-yet';
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { MongooseModule } from '@nestjs/mongoose';
 import { ChatHistory, ChatHistorySchema } from './entity/chat-history';
 import { ChatRoom, ChatRoomSchema } from './entity/chat-room';

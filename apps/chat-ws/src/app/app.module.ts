@@ -7,6 +7,7 @@ import { AuthCoreModule } from '@eco-books/auth-core';
 import { ChatController } from './api/chat.controller';
 import { ChatWsGateway } from './ws/chat-ws.gateway';
 import { ExternalClientsModule } from '@eco-books/external-clients';
+import { HealthCheckCoreModule } from '@eco-books/health-check-core';
 
 @Module({
   imports: [
@@ -17,7 +18,8 @@ import { ExternalClientsModule } from '@eco-books/external-clients';
     }),
     ChatCoreModule,
     AuthCoreModule,
-    ExternalClientsModule
+    ExternalClientsModule,
+    HealthCheckCoreModule
   ],
   controllers: [ChatController],
   providers: [ChatWsGateway],

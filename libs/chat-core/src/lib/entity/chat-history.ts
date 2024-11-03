@@ -14,7 +14,6 @@ export class ChatHistory {
   context: string;
   @Prop()
   image: string;
-
 }
 
 export const ChatHistorySchema = SchemaFactory.createForClass(ChatHistory);

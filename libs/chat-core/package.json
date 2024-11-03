@@ -2,7 +2,6 @@
   "name": "@eco-books/chat-core",
   "version": "0.0.1",
   "dependencies": {
-    "tslib": "^2.3.0",
     "@nestjs/platform-socket.io": "^10.4.6",
     "@socket.io/redis-adapter": "^8.3.0",
     "@nestjs/cache-manager": "^2.3.0",
@@ -10,9 +9,11 @@
     "ioredis": "^5.4.1",
     "redis": "^4.7.0",
     "@nestjs/mongoose": "^10.0.10",
-    "mongoose": "^8.5.2"
+    "mongoose": "^8.5.2",
+    "tslib": "^2.3.0"
   },
   "type": "commonjs",
   "main": "./src/index.js",
-  "typings": "./src/index.d.ts"
+  "typings": "./src/index.d.ts",
+  "private": true
 }
