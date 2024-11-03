@@ -2,7 +2,11 @@ import { Module } from '@nestjs/common';
 
 import { ConfigModule } from '@nestjs/config';
 import { AwsParameterStoreProvider } from '@eco-books/aws-parameter-store';
-import { ChatCoreModule } from '@eco-books/chat-core';
+import { ChatCoreModule} from '@eco-books/chat-core';
+import { AuthCoreModule } from '@eco-books/auth-core';
+import { ChatController } from './api/chat.controller';
+import { ChatWsGateway } from './ws/chat-ws.gateway';
+import { ExternalClientsModule } from '@eco-books/external-clients';
 
 @Module({
   imports: [
@@ -12,9 +16,11 @@ import { ChatCoreModule } from '@eco-books/chat-core';
       load: [AwsParameterStoreProvider],
     }),
     ChatCoreModule,
+    AuthCoreModule,
+    ExternalClientsModule
   ],
-  controllers: [],
-  providers: [],
+  controllers: [ChatController],
+  providers: [ChatWsGateway],
   exports: [],
 })
 export class AppModule {}

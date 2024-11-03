@@ -1,5 +1,5 @@
 {
-  "name": "@eco-books/health-core",
+  "name": "@eco-books/health-check-core",
   "version": "0.0.1",
   "dependencies": {
     "tslib": "^2.3.0"

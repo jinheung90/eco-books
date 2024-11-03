@@ -1,10 +1,10 @@
 export default {
-  displayName: 'health-core',
+  displayName: 'health-check-core',
   preset: '../../jest.preset.js',
   testEnvironment: 'node',
   transform: {
     '^.+\\.[tj]s$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.spec.json' }],
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
-  coverageDirectory: '../../coverage/libs/health-core',
+  coverageDirectory: '../../coverage/libs/health-check-core',
 };

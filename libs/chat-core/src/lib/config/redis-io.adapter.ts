@@ -3,11 +3,14 @@ import { IoAdapter } from '@nestjs/platform-socket.io';
 import { createShardedAdapter } from '@socket.io/redis-adapter';
 import { createClient } from 'redis';
 import { ServerOptions } from 'socket.io';
+import { Logger } from '@nestjs/common';
+import { logger } from 'nx/src/utils/logger';
 
 
 export class RedisIoAdapter extends IoAdapter {
 
   private readonly adapter: ReturnType<typeof createShardedAdapter>;
+  private logger = new Logger(RedisIoAdapter.name)
   constructor(url: string) {
     super();
     const pubClient = createClient({ url: url });

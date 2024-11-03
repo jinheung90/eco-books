@@ -9,7 +9,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 import process from 'process';
 import { ConfigService } from '@nestjs/config';
-import { AsyncApiDocumentBuilder, AsyncApiModule } from 'nestjs-asyncapi';
+// import { AsyncApiDocumentBuilder, AsyncApiModule } from 'nestjs-asyncapi';
 
 import { RedisIoAdapter } from '@eco-books/chat-core';
 
@@ -17,21 +17,10 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
-  const port = process.env.PORT || 3000;
-
+  const logger = new Logger('main');
+  const port = parseInt(process.env.PORT) || 3000;
   const configService = app.get<ConfigService>(ConfigService);
 
-  const asyncApi = new AsyncApiDocumentBuilder()
-    .setTitle('채팅 서비스')
-    .setDescription('채팅 서비스')
-    .setVersion('1.0')
-    .setDefaultContentType('application/json')
-    // .addSecurity()// none
-    .addServer('chatting-ws', {
-      url: configService.get<string>('APP_SERVER_URL'),
-      protocol: 'socket.io',
-    })
-    .build();
 
   app.enableCors({
     credentials: true,
@@ -42,9 +31,22 @@ async function bootstrap() {
       configService.get<string>('USER_SERVICE_APP'),
     ],
   });
-
+  logger.log(configService.get('redis-url'));
   const redisAdapter = new RedisIoAdapter(configService.get('redis-url'));
   app.useWebSocketAdapter(redisAdapter);
+
+  //todo react 관련 문제 해결해야함
+  // const asyncApi = new AsyncApiDocumentBuilder()
+  //   .setTitle('채팅 서비스')
+  //   .setDescription('채팅 서비스')
+  //   .setVersion('1.0')
+  //   .setDefaultContentType('application/json')
+  //   // .addSecurity()// none
+  //   .addServer('chatting-ws', {
+  //     url: configService.get<string>('APP_SERVER_URL'),
+  //     protocol: 'socket.io',
+  //   })
+  //   .build();
   // const asyncApiDocument = AsyncApiModule.createDocument(app, asyncApi);
   // await AsyncApiModule.setup('/async', app, asyncApiDocument);
 

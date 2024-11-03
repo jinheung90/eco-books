@@ -13,13 +13,17 @@
     "lib": ["es2020", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
     "baseUrl": ".",
     "paths": {
+      "@eco-books/auth-core": ["libs/auth-core/src/index.ts"],
       "@eco-books/aws-parameter-store": [
         "libs/aws-parameter-store/src/index.ts"
       ],
       "@eco-books/chat-core": ["libs/chat-core/src/index.ts"],
       "@eco-books/external-clients": ["libs/external-clients/src/index.ts"],
+      "@eco-books/health-check-core": ["libs/health-check-core/src/index.ts"],
       "@eco-books/type-common": ["libs/type-common/src/index.ts"]
     }
   },
