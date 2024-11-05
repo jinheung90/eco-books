@@ -1,25 +1,34 @@
-import { ConfigService } from '@nestjs/config';
+
 import { Injectable } from '@nestjs/common';
+import { Repository } from 'typeorm';
 import { ChatRoom } from '../entity/chat-room';
-import { Model } from 'mongoose';
-import { InjectModel } from '@nestjs/mongoose';
+import { ChatMessage } from '../entity/chat-message';
 
 @Injectable()
-export class ChatRoomRepository {
-  constructor(
-    @InjectModel(ChatRoom.name)
-    private readonly chatRoomModel: Model<ChatRoom>,
-    private readonly configService: ConfigService,
-  ) {}
+export class ChatRoomRepository extends Repository<ChatRoom> {
 
-  save(t: ChatRoom) {
-    return this.chatRoomModel.create(t).then();
-  }
-
-  async findByUserIdAndUserBookId(userId: number[], userBookId: number) {
-    return this.chatRoomModel.findOne({
-      userId: userId,
-      userBookId: userBookId
-    });
-  }
+  // 제공자 유저 검색
+  // async findAllByUserIdAndIsHost(userId: number, isHost: boolean, page: number, size: number) {
+  //   return this.createQueryBuilder()
+  //     .select([
+  //       'chatRoom.id', 'id',
+  //       'chatRoom.chatRoomUser', 'chatRoomUsers',
+  //       'chatRoom.chatRoomUser.chatMessage',])
+  //     .addSelect((subQuery) => {
+  //       return subQuery.select(ChatMessage.name)
+  //         .where('chatRoom.chatRoomUser.chatMessage.id > chatMessage.id')
+  //         .andWhere('chatMessage.userId = :userId', {userId: userId})
+  //         .andWhere('chat')
+  //         .getCount()
+  //     }, 'unreadMessageCount')
+  //     .addSelect((subQuery) => {
+  //       return
+  //     })
+  //     .andWhere("chatRoom.chatRoomUser.userId = :userId", { userId: userId })
+  //     .andWhere("chatRoom.chatRoomUser.isHost = :isHost", { isHost: isHost })
+  //     .orderBy()
+  //     .limit(size)
+  //     .offset(page * size);
+  //
+  // }
 }

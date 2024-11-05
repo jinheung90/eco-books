@@ -11,11 +11,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { Logger, UseGuards } from '@nestjs/common';
 import { JwtTokenService, JwtWsGuard } from '@eco-books/auth-core';
-import {
-  ChatCursorService,
-  ChatHistoryService,
-  ChatRoomService,
-} from '@eco-books/chat-core';
+import { ChatService } from '@eco-books/chat-core';
 import { BookServiceClients } from '@eco-books/external-clients';
 import {
   ChatCursorDto,
@@ -40,9 +36,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private readonly USER_CLIENTS_ROOM_ID_PREFIX = 'chat-user-id:';
   constructor(
     private readonly tokenService: JwtTokenService,
-    private readonly chatCursorService: ChatCursorService,
-    private readonly chatHistoryService: ChatHistoryService,
-    private readonly chatRoomService: ChatRoomService,
+    private readonly chatRoomService: ChatService,
     private readonly bookServiceClients: BookServiceClients
   ) {}
 
@@ -85,7 +79,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.tokenService.decodeAccessToken(token);
   }
 
-  handleDisconnect(client: any): any {}
+  handleDisconnect(client: any) {}
 
   private sendMessageToAudience(chatDto: ChatDto) {
     this.server.to(chatDto.roomId).emit('/chat/receive', chatDto);

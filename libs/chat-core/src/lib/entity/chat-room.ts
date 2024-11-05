@@ -1,13 +1,32 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
 
-@Schema({
-  timestamps: true,
-})
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn
+} from 'typeorm';
+import { ChatRoomUser } from './chat-room-user';
+
+@Entity()
 export class ChatRoom {
-  @Prop()
-  userId: number[];
-  @Prop()
-  userBookId: number;
-}
 
-export const ChatRoomSchema = SchemaFactory.createForClass(ChatRoom);
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
+  userBookId: number;
+
+  @OneToMany(type => ChatRoomUser, chatRoomUser => chatRoomUser.chatRoom)
+  chatRoomUsers: ChatRoomUser[];
+
+  @CreateDateColumn({name: 'created_at'})
+  createdAt: Date;
+
+  @UpdateDateColumn({name: 'updated_at'})
+  updatedAt: Date;
+
+  @Column()
+  activity: boolean;
+}

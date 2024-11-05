@@ -17,11 +17,11 @@ export class BookServiceClients {
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
   ) {
-    this.userServiceUrl = this.USER_BOOK_CHECK_PATH + this.configService.get<string>('USER_SERVICE_URL');
+    this.userServiceUrl = this.configService.get<string>('USER_SERVICE_URL');
   }
 
   async getBookInfoByUserBookId(userBookId: number)  {
-    let url = this.userServiceUrl;
+    let url = this.userServiceUrl + this.USER_BOOK_CHECK_PATH;
     url = url.replace(userBookId.toString(), '{id}');
     const { data } = await firstValueFrom(this.httpService.get<UserBookCheckDto>(url)
       .pipe(

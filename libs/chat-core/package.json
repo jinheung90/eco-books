@@ -8,8 +8,6 @@
     "cache-manager-redis-yet": "^5.1.5",
     "ioredis": "^5.4.1",
     "redis": "^4.7.0",
-    "@nestjs/mongoose": "^10.0.10",
-    "mongoose": "^8.5.2",
     "tslib": "^2.3.0"
   },
   "type": "commonjs",

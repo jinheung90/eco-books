@@ -5,7 +5,7 @@ import {
   ChatRoomListResponse,
   Roles,
 } from '@eco-books/type-common';
-import { ChatCursorService, ChatHistoryService } from '@eco-books/chat-core';
+import { ChatService } from '@eco-books/chat-core';
 import { BookServiceClients } from '@eco-books/external-clients';
 
 @Controller('chat')
@@ -13,16 +13,19 @@ import { BookServiceClients } from '@eco-books/external-clients';
 export class ChatController {
   constructor(
     private readonly tokenService: JwtTokenService,
-    private readonly chatCursorService: ChatCursorService,
-    private readonly chatHistoryService: ChatHistoryService,
+    private readonly chatService: ChatService,
     private readonly bookServiceClients: BookServiceClients
   ) {}
 
   @Get('room/list')
   @Roles(Authorities.USER)
   getChatRoomList(@Req() request: Request): ChatRoomListResponse {
+
+
     return {
-      chatPreviewList: [],
+      chatPreviewList: [
+
+      ],
     };
   }
 
@@ -33,5 +36,6 @@ export class ChatController {
     @Query('chatId') chatId: string,
     @Query('size') size: number
   ) {
+
   }
 }

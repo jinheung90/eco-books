@@ -6,18 +6,11 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { RedisClientOptions } from 'redis';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import { redisStore } from 'cache-manager-redis-yet';
-// eslint-disable-next-line @nx/enforce-module-boundaries
-import { MongooseModule } from '@nestjs/mongoose';
-import { ChatHistory, ChatHistorySchema } from './entity/chat-history';
-import { ChatRoom, ChatRoomSchema } from './entity/chat-room';
-import { ChatRoomService } from './service/chat-room.service';
-import { ChatCursorService } from './service/chat-cursor.service';
-import { ChatHistoryService } from './service/chat-history.service';
-import { ChatHistoryRepository } from './repository/chat-history.repository';
-import { ChatCursorRepository } from './repository/chat-cursor.repository';
-import { ChatRoomRepository } from './repository/chat-room.repository';
-import { ChatCursor, ChatCursorSchema } from './entity/chat-cursor';
+import { ChatService } from './service/chat.service';
 import { ConfigService } from '@nestjs/config';
+import { chatDbProvider } from './config/chat-db.provider';
+import { ChatRoomRepository } from './repository/chat-room.repository';
+import { ChatMessageRepository } from './repository/chat-message.repository';
 
 
 @Module({
@@ -32,34 +25,8 @@ import { ConfigService } from '@nestjs/config';
         },
       }),
     }),
-  }),
-  MongooseModule.forRootAsync({
-    inject: [ConfigService],
-    useFactory: (configService: ConfigService) => {
-      return {
-        uri: configService.get<string>('mongodb-full-url'),
-        user: configService.get<string>('mongodb-name'),
-        pass: configService.get<string>('mongodb-password'),
-
-      }
-    },
-  }),
-  MongooseModule.forFeature([
-    {
-      name: ChatHistory.name,
-      schema: ChatHistorySchema,
-    },
-    {
-      name: ChatCursor.name,
-      schema: ChatCursorSchema
-    },
-    {
-      name: ChatRoom.name,
-      schema: ChatRoomSchema,
-    }
-  ]),
-  ],
-  providers: [ChatRoomService, ChatCursorService, ChatHistoryService, ChatHistoryRepository, ChatCursorRepository, ChatRoomRepository],
-  exports: [ChatRoomService, ChatCursorService, ChatHistoryService],
+  }),],
+  providers: [... chatDbProvider, ChatService, ChatRoomRepository, ChatMessageRepository],
+  exports: [ChatService],
 })
 export class ChatCoreModule {}
