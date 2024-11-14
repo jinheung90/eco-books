@@ -18,7 +18,7 @@ async function bootstrap() {
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
   const logger = new Logger('main');
-  const port = parseInt(process.env.PORT) || 3000;
+  const port = parseInt(process.env.PORT) || 8081;
   const configService = app.get<ConfigService>(ConfigService);
 
 
@@ -32,7 +32,11 @@ async function bootstrap() {
     ],
   });
   logger.log(configService.get('redis-url'));
-  const redisAdapter = new RedisIoAdapter(configService.get('redis-url'));
+
+  await app.listen(port);
+
+  const redisAdapter = new RedisIoAdapter();
+  await redisAdapter.connectToRedis(configService.get('redis-url'))
   app.useWebSocketAdapter(redisAdapter);
 
   //todo react 관련 문제 해결해야함
@@ -50,7 +54,6 @@ async function bootstrap() {
   // const asyncApiDocument = AsyncApiModule.createDocument(app, asyncApi);
   // await AsyncApiModule.setup('/async', app, asyncApiDocument);
 
-  await app.listen(port);
 
   Logger.log(
     `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`
