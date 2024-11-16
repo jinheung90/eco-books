@@ -1,9 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from '@eco-books/type-common';
 
+
 @Injectable()
 export class JwtTokenService {
+  private logger = new Logger(JwtTokenService.name);
+
   constructor(private readonly jwtService: JwtService) {}
 
   decodeAccessToken(resolvedToken: string): JwtPayload {
@@ -11,7 +14,7 @@ export class JwtTokenService {
   }
 
   checkExpired(exp: number) {
-    return exp <= new Date().getTime();
+    return exp <= (new Date().getTime() / 1000);
   }
 
 }
