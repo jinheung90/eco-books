@@ -18,7 +18,7 @@ export class ChatRoom {
   @Column()
   userBookId: number;
 
-  @OneToMany(type => ChatRoomUser, chatRoomUser => chatRoomUser.chatRoom)
+  @OneToMany(() => ChatRoomUser, chatRoomUser => chatRoomUser.chatRoom)
   chatRoomUsers: ChatRoomUser[];
 
   @CreateDateColumn({name: 'created_at'})
