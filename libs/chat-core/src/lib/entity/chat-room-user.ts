@@ -4,11 +4,12 @@ import {
   Entity,
   ManyToOne, OneToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
+  JoinColumn
 } from 'typeorm';
 import { ChatRoom } from './chat-room';
 import { ChatMessage } from './chat-message';
-import { JoinColumn } from 'typeorm/browser';
+
 
 @Entity()
 export class ChatRoomUser {
@@ -26,7 +27,7 @@ export class ChatRoomUser {
   @JoinColumn({name: 'cursor_chat_message_id'})
   chatMessage: ChatMessage;
 
-  @ManyToOne(type => ChatRoom, chatRoom => chatRoom.chatRoomUsers)
+  @ManyToOne(() => ChatRoom, chatRoom => chatRoom.chatRoomUsers)
   chatRoom: ChatRoom;
 
   @CreateDateColumn({name: 'created_at'})
