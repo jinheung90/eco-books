@@ -22,7 +22,8 @@
       "@eco-books/chat-core": ["libs/chat-core/src/index.ts"],
       "@eco-books/external-clients": ["libs/external-clients/src/index.ts"],
       "@eco-books/health-check-core": ["libs/health-check-core/src/index.ts"],
-      "@eco-books/type-common": ["libs/type-common/src/index.ts"]
+      "@eco-books/type-common": ["libs/type-common/src/index.ts"],
+      "@eco-books/winston-logger": ["libs/winston-logger/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -3,5 +3,5 @@ export interface ChatDto {
   imageUrl: string,
   clientId: string,
   sendUserId: number,
-  roomId:string
+  roomId: number
 }

@@ -9,9 +9,9 @@ import {
   WebSocketServer
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { Logger, UseGuards } from '@nestjs/common';
+import { Logger, UseFilters, UseGuards } from '@nestjs/common';
 import { JwtTokenService, JwtWsGuard } from '@eco-books/auth-core';
-import { ChatService } from '@eco-books/chat-core';
+import { ChatService, WsExceptionFilter } from '@eco-books/chat-core';
 import { BookServiceClients } from '@eco-books/external-clients';
 import {
   ChatCursorDto,
@@ -21,14 +21,15 @@ import {
 } from '@eco-books/type-common';
 
 @WebSocketGateway({
-  namespace: '/chat',
+  namespace: 'ws/chat',
   cors: {
     origin: [process.env['CLIENT_HOST'], 'http://localhost:3000'],
     credentials: true,
-    transports: ['websocket', 'polling'],
+    transports: ['websocket']
   },
 })
-@UseGuards(JwtWsGuard)
+@UseFilters(WsExceptionFilter)
+// @UseGuards(JwtWsGuard)
 export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   private server: Server;
@@ -38,18 +39,20 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private readonly tokenService: JwtTokenService,
     private readonly chatRoomService: ChatService,
     private readonly bookServiceClients: BookServiceClients
-  ) {}
+  ) {
+
+  }
 
   // 채팅 보내기
   @SubscribeMessage('/send')
   @UseGuards(JwtWsGuard)
-  async sendChat(
+  async receiveChat(
     @MessageBody() dto: ChatDto,
     @ConnectedSocket() client: Socket & { user: JwtPayload }
   ) {
     dto.sendUserId = parseInt(client.user.sub);
     this.sendMessageToAudience(dto);
-  }
+   }
 
   // 책 상세에서 채팅방 들어가기
   @SubscribeMessage('/income-book-detail')
@@ -63,7 +66,9 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async incomeChatList(
     @MessageBody() data: ChatIncomeDto,
     @ConnectedSocket() client: Socket & { user: JwtPayload }
-  ) {}
+  ) {
+    client.join('a');
+  }
 
   // 커서 업데이트
   @SubscribeMessage('/update-cursor')
@@ -75,14 +80,13 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   handleConnection(client: any, ...args: any[]): any {
-    const token = client?.handshake?.headers?.authorization;
-    this.tokenService.decodeAccessToken(token);
+
   }
 
   handleDisconnect(client: any) {}
 
   private sendMessageToAudience(chatDto: ChatDto) {
-    this.server.to(chatDto.roomId).emit('/chat/receive', chatDto);
+    this.server.to(chatDto.roomId.toString()).emit('/receive', chatDto);
   }
 
   private updateCursorWithAnotherClients(

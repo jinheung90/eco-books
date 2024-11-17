@@ -20,8 +20,6 @@ export class ChatController {
   @Get('room/list')
   @Roles(Authorities.USER)
   getChatRoomList(@Req() request: Request): ChatRoomListResponse {
-
-
     return {
       chatPreviewList: [
 
