@@ -6,12 +6,12 @@ import {
   OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
-  WebSocketServer
+  WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { Logger, UseFilters, UseGuards } from '@nestjs/common';
 import { JwtTokenService, JwtWsGuard } from '@eco-books/auth-core';
-import { ChatService, WsExceptionFilter } from '@eco-books/chat-core';
+import { ChatCacheService, ChatService, WsExceptionFilter } from '@eco-books/chat-core';
 import { BookServiceClients } from '@eco-books/external-clients';
 import {
   ChatCursorDto,
@@ -19,6 +19,8 @@ import {
   ChatIncomeDto,
   JwtPayload,
 } from '@eco-books/type-common';
+
+
 
 @WebSocketGateway({
   namespace: 'ws/chat',
@@ -34,14 +36,13 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   private server: Server;
   private readonly logger = new Logger(ChatWsGateway.name);
-  private readonly USER_CLIENTS_ROOM_ID_PREFIX = 'chat-user-id:';
+  private readonly ROOM_ID_PREFIX = 'chat-user-id:';
   constructor(
     private readonly tokenService: JwtTokenService,
-    private readonly chatRoomService: ChatService,
+    private readonly chatService: ChatService,
+    private readonly chatCacheService: ChatCacheService,
     private readonly bookServiceClients: BookServiceClients
-  ) {
-
-  }
+  ) {}
 
   // 채팅 보내기
   @SubscribeMessage('/send')
@@ -51,23 +52,25 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket & { user: JwtPayload }
   ) {
     dto.sendUserId = parseInt(client.user.sub);
+    dto.clientId = client.id;
+    const chatMessage = await this.chatService.insertChat(dto.sendUserId, dto.chatRoomId, dto.message, dto.chatMessageType);
+    this.chatCacheService.updateCursor(dto.chatRoomUserId, chatMessage.id);
     this.sendMessageToAudience(dto);
    }
 
-  // 책 상세에서 채팅방 들어가기
-  @SubscribeMessage('/income-book-detail')
-  async incomeBookDetail(
-    @MessageBody() data: ChatIncomeDto,
-    @ConnectedSocket() client: Socket & { user: JwtPayload }
-  ) {}
-
-  // 채팅 리스트에서 채팅방 들어가기
-  @SubscribeMessage('/income-chat-list')
+  @SubscribeMessage('/income')
   async incomeChatList(
     @MessageBody() data: ChatIncomeDto,
     @ConnectedSocket() client: Socket & { user: JwtPayload }
   ) {
-    client.join('a');
+    const chatRoomDto = await this.chatService.getChatRoomWhenIncome(
+      data.chatRoomId,
+      parseInt(client.user.sub),
+      data.userBookId,
+      data.sellerId
+    )
+    client.join(this.ROOM_ID_PREFIX + chatRoomDto.id);
+    return chatRoomDto;
   }
 
   // 커서 업데이트
@@ -76,6 +79,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() data: ChatCursorDto,
     @ConnectedSocket() client: Socket & { user: JwtPayload }
   ) {
+    this.chatCacheService.updateCursor(data.chatRoomUserId, data.chatMessageId);
     this.updateCursorWithAnotherClients(parseInt(client.user.sub), data);
   }
 
@@ -83,10 +87,12 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   }
 
-  handleDisconnect(client: any) {}
+  handleDisconnect(client: any) {
+
+  }
 
   private sendMessageToAudience(chatDto: ChatDto) {
-    this.server.to(chatDto.roomId.toString()).emit('/receive', chatDto);
+    this.server.to(this.ROOM_ID_PREFIX + chatDto.chatRoomId).emit('/receive', chatDto);
   }
 
   private updateCursorWithAnotherClients(
@@ -94,7 +100,8 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     cursorDto: ChatCursorDto
   ) {
     this.server
-      .to(this.USER_CLIENTS_ROOM_ID_PREFIX + userId)
+      .to(this.ROOM_ID_PREFIX + userId)
       .emit('/chat/update-cursor', cursorDto);
   }
+
 }

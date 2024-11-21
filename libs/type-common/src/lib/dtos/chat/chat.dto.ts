@@ -1,7 +1,10 @@
+import { ChatMessageType } from '../../enums/chat/chat-message.type';
+
 export interface ChatDto {
   message: string,
-  imageUrl: string,
+  chatMessageType: ChatMessageType,
   clientId: string,
   sendUserId: number,
-  roomId: number
+  chatRoomUserId: number,
+  chatRoomId: number
 }

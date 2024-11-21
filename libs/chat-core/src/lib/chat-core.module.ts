@@ -9,9 +9,10 @@ import { redisStore } from 'cache-manager-redis-yet';
 import { ChatService } from './service/chat.service';
 import { ConfigService } from '@nestjs/config';
 import { chatDbProvider } from './config/chat-db.provider';
-import { ChatRoomRepository } from './repository/chat-room.repository';
-import { ChatMessageRepository } from './repository/chat-message.repository';
-
+import { ChatCacheService } from './service/chat-cache.service';
+// import { ChatRoomRepository } from './repository/chat-room.repository';
+// import { ChatMessageRepository } from './repository/chat-message.repository';
+//
 
 @Module({
   imports: [CacheModule.registerAsync<RedisClientOptions>({
@@ -26,7 +27,9 @@ import { ChatMessageRepository } from './repository/chat-message.repository';
       }),
     }),
   }),],
-  providers: [... chatDbProvider, ChatService, ChatRoomRepository, ChatMessageRepository],
-  exports: [ChatService],
+  providers: [... chatDbProvider,
+    // ChatRoomRepository, ChatMessageRepository
+  ],
+  exports: [ChatService, ChatCacheService],
 })
 export class ChatCoreModule {}

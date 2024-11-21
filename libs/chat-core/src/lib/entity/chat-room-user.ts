@@ -9,6 +9,8 @@ import {
 } from 'typeorm';
 import { ChatRoom } from './chat-room';
 import { ChatMessage } from './chat-message';
+import { ChatRoomUserRepository } from '../repository/chat-room-user.repository';
+import { ChatRoomUserDto } from '@eco-books/type-common';
 
 
 @Entity()
@@ -35,4 +37,23 @@ export class ChatRoomUser {
 
   @UpdateDateColumn({name: 'updated_at'})
   updatedAt: Date;
+
+  static toEntity(userId: number, isHost: boolean, chatRoom: ChatRoom): ChatRoomUser {
+    const entity = new ChatRoomUser();
+    entity.chatRoom = chatRoom;
+    entity.userId = userId;
+    entity.isHost = isHost;
+    return entity;
+  }
+
+  static toDto(chatRoomUser: ChatRoomUser) : ChatRoomUserDto {
+    return {
+      id: chatRoomUser.id,
+      isHost: chatRoomUser.isHost,
+      userId: chatRoomUser.userId,
+      chatMessage: ChatMessage.toDto(chatRoomUser.chatMessage),
+      createdAt: chatRoomUser.createdAt,
+      updatedAt: chatRoomUser.updatedAt
+    }
+  }
 }

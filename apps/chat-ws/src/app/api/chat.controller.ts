@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Req, UseGuards } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Query, Req, UseGuards } from '@nestjs/common';
 import { JwtApiGuard, JwtTokenService } from '@eco-books/auth-core';
 import {
   Authorities,
@@ -35,5 +35,13 @@ export class ChatController {
     @Query('size') size: number
   ) {
 
+  }
+
+  @Delete('room/out')
+  @Roles(Authorities.USER)
+  leaveChatRoom(
+    @Param('id') chatRoomId: number
+  ) {
+    return
   }
 }

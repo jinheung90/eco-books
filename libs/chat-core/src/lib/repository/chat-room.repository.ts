@@ -2,10 +2,12 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { ChatRoom } from '../entity/chat-room';
-import { ChatMessage } from '../entity/chat-message';
+
 
 @Injectable()
 export class ChatRoomRepository extends Repository<ChatRoom> {
+
+
 
   // 제공자 유저 검색
   // async findAllByUserIdAndIsHost(userId: number, isHost: boolean, page: number, size: number) {

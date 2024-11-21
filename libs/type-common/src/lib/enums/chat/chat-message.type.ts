@@ -1,4 +1,4 @@
-export enum MessageType {
+export enum ChatMessageType {
   image = 'image',
   text = 'text',
 }

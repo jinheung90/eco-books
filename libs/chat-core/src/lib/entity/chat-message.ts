@@ -1,5 +1,5 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { MessageType } from '@eco-books/type-common';
+import { ChatMessageDto, ChatMessageType } from '@eco-books/type-common';
 
 
 @Entity()
@@ -12,13 +12,13 @@ export class ChatMessage {
   userId: number;
 
   @Column()
-  roomId: number;
+  chatRoomId: number;
 
   @Column({length: 500})
   context: string;
 
-  @Column({type: "enum", enum: MessageType, default: MessageType.text})
-  messageType: MessageType;
+  @Column({type: "enum", enum: ChatMessageType, default: ChatMessageType.text})
+  messageType: ChatMessageType;
 
   @CreateDateColumn({name: 'created_at'})
   createdAt: Date;
@@ -28,6 +28,16 @@ export class ChatMessage {
 
   @Column()
   activity: boolean;
+
+  static toDto(chatMessage: ChatMessage): ChatMessageDto {
+    return {
+      id: chatMessage.id,
+      userId: chatMessage.userId,
+      chatMessageType: chatMessage.messageType,
+      message: chatMessage.context,
+      createdAt: chatMessage.createdAt
+    }
+  }
 }
 
 

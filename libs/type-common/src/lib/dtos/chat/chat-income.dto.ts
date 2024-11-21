@@ -1,4 +1,5 @@
 export interface ChatIncomeDto {
-  roomId: string,
+  chatRoomId: number,
   userBookId: number,
+  sellerId: number
 }

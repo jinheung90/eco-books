@@ -1,6 +1,7 @@
 export interface ChatCursorDto {
+  chatRoomUserId: number,
   userId: number,
-  roomId: string,
-  chatId: string,
+  roomId: number,
+  chatMessageId: number,
   updatedAt: Date
 }
