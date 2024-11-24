@@ -8,6 +8,4 @@ import { Repository } from 'typeorm';
 export class ChatMessageRepository extends Repository<ChatMessage> {
 
 
-
-
 }

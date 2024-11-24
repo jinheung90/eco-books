@@ -70,4 +70,10 @@ export class ChatService {
     return this.chatMessageRepository.save(chatMessage);
   }
 
+  async pageChatRoomListByUserId(userId: number, isHost: boolean, page: number, size: number) {
+    return this.dataSource.manager.transaction(async () => {
+
+      return result.chatRoom;
+    })
+  }
 }

@@ -9,32 +9,26 @@ import {
 } from 'typeorm';
 import { ChatRoom } from './chat-room';
 import { ChatMessage } from './chat-message';
-import { ChatRoomUserRepository } from '../repository/chat-room-user.repository';
 import { ChatRoomUserDto } from '@eco-books/type-common';
-
 
 @Entity()
 export class ChatRoomUser {
 
   @PrimaryGeneratedColumn()
   id: number;
-
   @Column()
   userId: number;
-
   @Column()
   isHost: boolean;
-
+  @Column()
+  activity: boolean;
   @OneToOne(() => ChatMessage)
   @JoinColumn({name: 'cursor_chat_message_id'})
   chatMessage: ChatMessage;
-
   @ManyToOne(() => ChatRoom, chatRoom => chatRoom.chatRoomUsers)
   chatRoom: ChatRoom;
-
   @CreateDateColumn({name: 'created_at'})
   createdAt: Date;
-
   @UpdateDateColumn({name: 'updated_at'})
   updatedAt: Date;
 
@@ -53,7 +47,8 @@ export class ChatRoomUser {
       userId: chatRoomUser.userId,
       chatMessage: ChatMessage.toDto(chatRoomUser.chatMessage),
       createdAt: chatRoomUser.createdAt,
-      updatedAt: chatRoomUser.updatedAt
+      updatedAt: chatRoomUser.updatedAt,
+      activity: chatRoomUser.activity
     }
   }
 }

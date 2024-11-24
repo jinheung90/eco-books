@@ -9,12 +9,13 @@ export interface ChatRoomDto {
 }
 
 export interface ChatRoomUserDto {
-  id: number,
-  userId: number,
-  isHost: boolean,
-  chatMessage: ChatMessageDto,
-  createdAt: Date,
-  updatedAt: Date,
+  id: number;
+  userId: number;
+  isHost: boolean;
+  activity: boolean;
+  chatMessage: ChatMessageDto;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface ChatMessageDto {

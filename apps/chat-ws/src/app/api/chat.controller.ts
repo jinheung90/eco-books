@@ -19,7 +19,15 @@ export class ChatController {
 
   @Get('room/list')
   @Roles(Authorities.USER)
-  getChatRoomList(@Req() request: Request): ChatRoomListResponse {
+  getChatRoomList(
+    @Req() request: Request,
+    @Query('page') page: number,
+    @Query('size') size: number
+  ): ChatRoomListResponse {
+    // 채팅 방 유저 목록을 가져온다
+    // 채팅 방 목록을 가져온다
+    // 채팅 유저 목록에서 마지막으로 읽은 채팅 아이디를 가져와서 안읽은 채팅 개수를 구한다
+    // 해당 방의 마지막 채팅을 가져온다
     return {
       chatPreviewList: [
 

@@ -6,34 +6,30 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm';
-import { ChatRoomUser } from './chat-room-user';
+
 import { ChatRoomDto } from '@eco-books/type-common';
+import { ChatRoomUser } from './chat-room-user';
 
 @Entity()
 export class ChatRoom {
+
+  @PrimaryGeneratedColumn()
+  id: number;
+  @Column()
+  userBookId: number;
+  @OneToMany(() => ChatRoomUser, chatRoomUser => chatRoomUser.chatRoom)
+  chatRoomUsers: ChatRoomUser[];
+  @CreateDateColumn({name: 'created_at'})
+  createdAt: Date;
+  @UpdateDateColumn({name: 'updated_at'})
+  updatedAt: Date;
+  @Column()
+  activity: boolean;
 
   constructor(userBookId: number) {
     this.userBookId = userBookId;
     this.activity = true;
   }
-
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column()
-  userBookId: number;
-
-  @OneToMany(() => ChatRoomUser, chatRoomUser => chatRoomUser.chatRoom)
-  chatRoomUsers: ChatRoomUser[];
-
-  @CreateDateColumn({name: 'created_at'})
-  createdAt: Date;
-
-  @UpdateDateColumn({name: 'updated_at'})
-  updatedAt: Date;
-
-  @Column()
-  activity: boolean;
 
   static toDto(chatRoom: ChatRoom): ChatRoomDto {
     return {
