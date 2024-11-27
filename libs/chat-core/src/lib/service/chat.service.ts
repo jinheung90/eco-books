@@ -69,11 +69,20 @@ export class ChatService {
     chatMessage.context = message;
     return this.chatMessageRepository.save(chatMessage);
   }
+  //
+  // async pageChatRoomListByUserId(userId: number, isHost: boolean, page: number, size: number) {
+  //   return this.dataSource.manager.transaction(async () => {
+  //
+  //     return result.chatRoom;
+  //   })
+  // }
 
-  async pageChatRoomListByUserId(userId: number, isHost: boolean, page: number, size: number) {
-    return this.dataSource.manager.transaction(async () => {
-
-      return result.chatRoom;
-    })
+  async findChatRoomUserById(chatRoomUserId: number) {
+    return await this.chatRoomUserRepository.findFirstById(chatRoomUserId);
   }
+
+  async getLatestChatMessage(chatRoomId: number) {
+    return await this.chatMessageRepository
+  }
+
 }

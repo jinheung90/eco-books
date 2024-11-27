@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { ChatRoomUser } from '../entity/chat-room-user';
-import { ChatPreviewDto, ChatRoomListResponse, PageResult } from '@eco-books/type-common';
-import { plainToInstance } from 'class-transformer';
-import { ChatMessage } from '../entity/chat-message';
+import { ChatPreviewDto, } from '@eco-books/type-common';
+
+
 
 @Injectable()
 export class ChatRoomUserRepository extends Repository<ChatRoomUser>{
@@ -17,7 +17,7 @@ export class ChatRoomUserRepository extends Repository<ChatRoomUser>{
   }
 
 
-  async findAllUserIdAndIsHostAndActivityIsTrueOrderByChatMessageCreatedAtDesc(userId: number, isHost: boolean, page: number, size: number): Promise<Array<ChatPreviewDto>> {
+  async findAllUserIdAndIsHostAndActivityIsTrueOrderByChatMessageIdDesc(userId: number, isHost: boolean, page: number, size: number): Promise<Array<ChatPreviewDto>> {
     const result = await this.createQueryBuilder('cr')
       .select([
         'cr.id', 'chatRoomId',
@@ -47,5 +47,10 @@ export class ChatRoomUserRepository extends Repository<ChatRoomUser>{
       .offset(page * size)
       .limit(size).getMany();
     return plainToInstance(ChatPreviewDto, result);
+  }
+
+  async findFirstById(id: number) {
+    return await this.createQueryBuilder('cru').select()
+      .where('cru.id = :id', {id}).getOne();
   }
 }

@@ -33,6 +33,7 @@ export class ChatMessage {
     return {
       id: chatMessage.id,
       userId: chatMessage.userId,
+      chatRoomId: chatMessage.chatRoomId,
       chatMessageType: chatMessage.messageType,
       message: chatMessage.context,
       createdAt: chatMessage.createdAt

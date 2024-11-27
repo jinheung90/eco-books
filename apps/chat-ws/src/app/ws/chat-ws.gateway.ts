@@ -11,7 +11,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { Logger, UseFilters, UseGuards } from '@nestjs/common';
 import { JwtTokenService, JwtWsGuard } from '@eco-books/auth-core';
-import { ChatCacheService, ChatService, WsExceptionFilter } from '@eco-books/chat-core';
+import { ChatCacheService, ChatMessage, ChatRoomUser, ChatService, WsExceptionFilter } from '@eco-books/chat-core';
 import { BookServiceClients } from '@eco-books/external-clients';
 import {
   ChatCursorDto,
@@ -19,8 +19,6 @@ import {
   ChatIncomeDto,
   JwtPayload,
 } from '@eco-books/type-common';
-
-
 
 @WebSocketGateway({
   namespace: 'ws/chat',
@@ -54,7 +52,8 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     dto.sendUserId = parseInt(client.user.sub);
     dto.clientId = client.id;
     const chatMessage = await this.chatService.insertChat(dto.sendUserId, dto.chatRoomId, dto.message, dto.chatMessageType);
-    this.chatCacheService.updateCursor(dto.chatRoomUserId, chatMessage.id);
+    const chatRoomDto =  await this.chatCacheService.findChatRoomById(dto.chatRoomUserId);
+    // this.chatCacheService.saveLatestChatMessage(ChatMessage.toDto(chatMessage), dto.sendUserId);
     this.sendMessageToAudience(dto);
    }
 
@@ -74,14 +73,14 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   // 커서 업데이트
-  @SubscribeMessage('/update-cursor')
-  async updateCursor(
-    @MessageBody() data: ChatCursorDto,
-    @ConnectedSocket() client: Socket & { user: JwtPayload }
-  ) {
-    this.chatCacheService.updateCursor(data.chatRoomUserId, data.chatMessageId);
-    this.updateCursorWithAnotherClients(parseInt(client.user.sub), data);
-  }
+  // @SubscribeMessage('/update-cursor')
+  // async updateCursor(
+  //   @MessageBody() dto: ChatCursorDto,
+  //   @ConnectedSocket() client: Socket & { user: JwtPayload }
+  // ) {
+  //
+  //   this.updateCursorWithAnotherClients(parseInt(client.user.sub), dto);
+  // }
 
   handleConnection(client: any, ...args: any[]): any {
 
@@ -103,5 +102,4 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       .to(this.ROOM_ID_PREFIX + userId)
       .emit('/chat/update-cursor', cursorDto);
   }
-
 }
