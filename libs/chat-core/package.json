@@ -4,8 +4,6 @@
   "dependencies": {
     "@nestjs/platform-socket.io": "^10.4.6",
     "@socket.io/redis-adapter": "^8.3.0",
-    "@nestjs/cache-manager": "^2.3.0",
-    "cache-manager-redis-yet": "^5.1.5",
     "ioredis": "^5.4.1",
     "redis": "^4.7.0",
     "tslib": "^2.3.0"
