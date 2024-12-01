@@ -5,7 +5,7 @@ import {
   ChatRoomListResponse, JwtPayload,
   Roles
 } from '@eco-books/type-common';
-import { ChatCacheService, ChatRoomUser, ChatService } from '@eco-books/chat-core';
+import { ChatCacheService, ChatService } from '@eco-books/chat-core';
 import { BookServiceClients } from '@eco-books/external-clients';
 
 @Controller('chat')
@@ -30,9 +30,6 @@ export class ChatController {
     // 채팅 방 목록을 가져온다
     // 채팅 유저 목록에서 마지막으로 읽은 채팅 아이디를 가져와서 안읽은 채팅 개수를 구한다
 
-    const userId = parseInt(request.user.sub);
-    const chatRoomUserDtos = this.chatCacheService.findFirstChatRoomUserById()
-
     return {
       chatPreviewList: [
 
@@ -55,6 +52,8 @@ export class ChatController {
   leaveChatRoom(
     @Param('id') chatRoomId: number
   ) {
-    return
+    return {
+
+    }
   }
 }

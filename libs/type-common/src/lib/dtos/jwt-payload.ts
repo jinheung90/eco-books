@@ -3,4 +3,5 @@ export interface JwtPayload {
   authorities: Array<string>;
   iss: string;
   exp: number;
+  id: number;
 }

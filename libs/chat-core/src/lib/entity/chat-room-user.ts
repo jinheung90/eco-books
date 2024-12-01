@@ -45,6 +45,7 @@ export class ChatRoomUser {
       id: chatRoomUser.id,
       isHost: chatRoomUser.isHost,
       userId: chatRoomUser.userId,
+      chatRoomId: chatRoomUser.chatRoom.id,
       chatMessage: ChatMessage.toDto(chatRoomUser.chatMessage),
       createdAt: chatRoomUser.createdAt,
       updatedAt: chatRoomUser.updatedAt,

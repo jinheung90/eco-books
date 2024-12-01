@@ -1,10 +1,10 @@
-import { CanActivate, ExecutionContext, HttpException, Injectable, Logger, UseFilters } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, Logger } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
 import { JwtTokenService } from '../jwt/jwt-token.service';
-import { BaseWsExceptionFilter, WsException } from '@nestjs/websockets';
+import {  WsException } from '@nestjs/websockets';
 import { Authorities, JwtPayload, ROLES_KEY } from '@eco-books/type-common';
-import { logger } from 'nx/src/utils/logger';
+
 
 @Injectable()
 export class JwtWsGuard implements CanActivate {
@@ -39,11 +39,11 @@ export class JwtWsGuard implements CanActivate {
     const isExpired = this.tokenService.checkExpired(payload.exp);
 
     if(isExpired) {
-      this.logger.log('jwt-expired');
       throw new WsException('jwt-expired');
     }
 
     socket.user = payload;
+    socket.user.id = parseInt(payload.sub);
 
     const requiredRoles = this.reflector.getAllAndOverride<Authorities[]>(ROLES_KEY, [
       context.getHandler(),

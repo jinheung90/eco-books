@@ -33,6 +33,7 @@ export class JwtApiGuard implements CanActivate {
     }
 
     request.user = payload;
+    request.user.id = parseInt(payload.sub);
 
     const requiredRoles = this.reflector.getAllAndOverride<Authorities[]>(ROLES_KEY, [
       context.getHandler(),

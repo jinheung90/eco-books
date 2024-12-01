@@ -81,8 +81,6 @@ export class ChatService {
     return await this.chatRoomUserRepository.findFirstById(chatRoomUserId);
   }
 
-  async getLatestChatMessage(chatRoomId: number) {
-    return await this.chatMessageRepository
-  }
+
 
 }
