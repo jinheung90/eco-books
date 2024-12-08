@@ -3,21 +3,9 @@ import { EnvironmentName } from '@eco-books/type-common';
 import { Logger } from '@nestjs/common';
 
 export class RedisClient {
-  private client: RedisClientType<RedisDefaultModules & RedisModules, RedisFunctions, RedisScripts>;
+  async
   protected logger = new Logger(RedisClient.name);
-  protected async setRedisClient(url: string, database: number) {
-    this.client = await createClient({
-      url: url,
-      database: database,
-    }).on('error', err =>
-      this.logger.error(`error connect redis err: ${err}`)
-    ).connect();
-
-  }
-
-  protected getRedisClient() {
-    return this.client;
-  }
+  private client: RedisClientType<RedisDefaultModules & RedisModules, RedisFunctions, RedisScripts>;
 
   async mgetData<T>(keys: string[]) {
     const values = await this.client.mGet(keys);
@@ -39,8 +27,6 @@ export class RedisClient {
     return await this.client.getSet(key, JSON.stringify(value));
   }
 
-
-
   async deleteData(key: string) {
     await this.client.del(key);
   }
@@ -56,10 +42,6 @@ export class RedisClient {
     }
   }
 
-  // async zadd<T>(key: string, sortValue: number, value: T) {
-  //   return this.client.zAdd(key, sortValue, JSON.stringify(value));
-  // }
-
   async zRem<T>(key: string, value: T) {
     return this.client.zRem(key, JSON.stringify(value));
   }
@@ -70,6 +52,20 @@ export class RedisClient {
       return;
     }
     await this.client.flushAll();
+  }
+
+  protected async setRedisClient(url: string, database: number) {
+    this.client = await createClient({
+      url: url,
+      database: database,
+    }).on('error', err =>
+      this.logger.error(`error connect redis err: ${err}`)
+    ).connect();
+
+  }
+
+  protected getRedisClient() {
+    return this.client;
   }
 }
 

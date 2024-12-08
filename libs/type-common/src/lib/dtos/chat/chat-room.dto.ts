@@ -21,10 +21,11 @@ export interface ChatRoomUserDto {
 }
 
 export interface ChatMessageDto {
-  id: number,
-  userId: number,
-  chatRoomId: number,
-  chatMessageType: ChatMessageType,
-  message: string,
-  createdAt: Date,
+  id: string;
+  userId: number;
+  chatRoomId: number;
+  chatMessageType: ChatMessageType;
+  message: string;
+  createdAt: Date;
+  saved: boolean;
 }

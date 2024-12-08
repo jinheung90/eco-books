@@ -10,32 +10,32 @@ import {
 } from '@eco-books/type-common';
 import { ChatRoomUser } from '../../../src/lib/entity/chat-room-user';
 import { ConfigService } from '@nestjs/config';
+import { ChatService } from '@eco-books/chat-core';
+import { chatDbProvider } from '../../../src/lib/config/chat-db.provider';
 
 
 
 describe('ChatCacheService', () => {
-  let chatCacheService: ChatCacheService;
+  let chatService: ChatService;
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
-      providers: [ChatCacheService, {
+      providers: [...chatDbProvider, ChatService, {
         provide: ConfigService,
         useValue: {
           get: jest.fn((key: string) => {
-            if(key === 'redis-url') {
-              return 'redis://localhost:6379';
-            } else if (key === 'APP_ENV') {
-              return EnvironmentName.LOCAL;
+            switch (key) {
+              case 'mysql-url': return 'jdbc:mysql://localhost:3306';
+              case 'mysql-name:': return 'root';
+              case 'mysql-password': return '1234';
+              case 'mysql-db': return 'eco_books_chat_test';
+              case 'APP_ENV': return EnvironmentName.LOCAL;
+              default: return null;
             }
           })
         }
       }],
     }).compile();
-    chatCacheService = moduleRef.get(ChatCacheService);
+    chatService = moduleRef.get(ChatService);
   });
-
-  afterEach(async () => {
-    chatCacheService.flushAll();
-  })
-
 
 });

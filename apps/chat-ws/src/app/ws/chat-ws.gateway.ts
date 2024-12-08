@@ -16,9 +16,10 @@ import { BookServiceClients } from '@eco-books/external-clients';
 import {
   ChatCursorDto,
   ChatDto,
-  ChatIncomeDto,
-  JwtPayload,
+  ChatIncomeDto, ChatMessageDto, ChatRoomDto,
+  JwtPayload
 } from '@eco-books/type-common';
+import { randomUUID } from 'node:crypto';
 
 @WebSocketGateway({
   namespace: 'ws/chat',
@@ -51,26 +52,53 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {
     dto.sendUserId = parseInt(client.user.sub);
     dto.clientId = client.id;
-    const chatMessage = await this.chatService.insertChat(dto.sendUserId, dto.chatRoomId, dto.message, dto.chatMessageType);
-    const chatRoomDto =  await this.chatCacheService.findChatRoomById(dto.chatRoomUserId);
-    // this.chatCacheService.saveLatestChatMessage(ChatMessage.toDto(chatMessage), dto.sendUserId);
+
+
+    const chatMessageDto: ChatMessageDto = {
+      id: randomUUID().toString(),
+      userId: dto.sendUserId,
+      chatRoomId: dto.chatRoomId,
+      chatMessageType: dto.chatMessageType,
+      createdAt: new Date(),
+      saved: false
+    }
+
+
+
     this.sendMessageToAudience(dto);
    }
 
-  @SubscribeMessage('/income')
+  @SubscribeMessage('/income-list')
   async incomeChatList(
-    @MessageBody() data: ChatIncomeDto,
+    @MessageBody() dto: ChatIncomeDto,
     @ConnectedSocket() client: Socket & { user: JwtPayload }
   ) {
-    const chatRoomDto = await this.chatService.getChatRoomWhenIncome(
-      data.chatRoomId,
-      parseInt(client.user.sub),
-      data.userBookId,
-      data.sellerId
-    )
+    let chatRoomDto: ChatRoomDto;
+    // 채팅방 목록에서 접근하는 경우
+    chatRoomDto = await this.chatCacheService.findChatRoomById(dto.chatRoomId);
+    // 캐싱되지 않은 채팅방
+    if(!chatRoomDto) {
+      chatRoomDto = await this.chatService.getChatRoomElseThrow(
+        dto.chatRoomId
+      );
+      this.chatCacheService.saveChatRoom(chatRoomDto);
+    }
+
     client.join(this.ROOM_ID_PREFIX + chatRoomDto.id);
     return chatRoomDto;
   }
+
+  @SubscribeMessage('/income-book-detail')
+  async incomeBookDetail(
+    @MessageBody() dto: ChatIncomeDto,
+    @ConnectedSocket() client: Socket & { user: JwtPayload }
+  ) {
+    const chatRoomDto = await this.chatService.saveChatRoomElseThrow(client.user.id, dto.userBookId, dto.sellerId);
+    this.chatCacheService.saveChatRoom(chatRoomDto);
+    client.join(this.ROOM_ID_PREFIX + chatRoomDto.id);
+    return chatRoomDto;
+  }
+
 
   // 커서 업데이트
   // @SubscribeMessage('/update-cursor')

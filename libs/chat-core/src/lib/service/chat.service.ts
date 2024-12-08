@@ -29,37 +29,34 @@ export class ChatService {
     return this.dataSource.manager.transaction(async () => {
       const result = await this.getChatRoom(buyerId, userBookId);
       if(!result) {
-        const chatRoom = await this.chatRoomRepository.save(new ChatRoom(userBookId));
-        const entityArray = [
-          ChatRoomUser.toEntity(buyerId, false, chatRoom), ChatRoomUser.toEntity(sellerId, true, chatRoom)
-        ];
-        const userList = await this.chatRoomUserRepository.save(entityArray);
-        chatRoom.chatRoomUsers = userList;
-        return chatRoom;
+        return await this.saveChatRoom(buyerId, userBookId, sellerId);
       }
       return result.chatRoom;
-    })
+    });
   }
+
+  async saveChatRoomElseThrow(buyerId: number, userBookId: number, sellerId: number) {
+    return this.dataSource.manager.transaction(async () => {
+      const result = await this.getChatRoom(buyerId, userBookId);
+      if(result) {
+        throw new RuntimeException("exists chatRoom");
+      }
+      return ChatRoom.toDto(await this.saveChatRoom(buyerId, userBookId, sellerId));
+    });
+  }
+
   async getChatRoomById(roomId: number) {
     return await this.chatRoomRepository.findOneBy({
       id: roomId
     });
   }
 
-  async getChatRoomWhenIncome(chatRoomId: number, buyerId: number, userBookId: number, sellerId: number) {
-    let chatRoom: ChatRoom;
-    if(!chatRoomId) {
-      chatRoom = await this.getChatRoomElseCreate(
-        buyerId,
-        userBookId,
-        sellerId
-      );
-    } else {
-      chatRoom = await this.getChatRoomById(chatRoomId);
-      if(!chatRoom) throw new RuntimeException("error");
-    }
+  async getChatRoomElseThrow(chatRoomId: number) {
+    const chatRoom = await this.getChatRoomById(chatRoomId);
+    if (!chatRoom) throw new RuntimeException(`not exists chatRoom id:${chatRoomId}`);
     return ChatRoom.toDto(chatRoom);
   }
+
 
   async insertChat(userId: number, chatRoomId: number, message: string, chatMessageType: ChatMessageType) {
     const chatMessage = new ChatMessage();
@@ -69,16 +66,20 @@ export class ChatService {
     chatMessage.context = message;
     return this.chatMessageRepository.save(chatMessage);
   }
-  //
-  // async pageChatRoomListByUserId(userId: number, isHost: boolean, page: number, size: number) {
-  //   return this.dataSource.manager.transaction(async () => {
-  //
-  //     return result.chatRoom;
-  //   })
-  // }
 
   async findChatRoomUserById(chatRoomUserId: number) {
     return await this.chatRoomUserRepository.findFirstById(chatRoomUserId);
+  }
+
+  private async saveChatRoom(buyerId: number, userBookId: number, sellerId: number) {
+    await this.chatRoomRepository.save(new ChatRoom(userBookId));
+    const chatRoom = await this.chatRoomRepository.save(new ChatRoom(userBookId));
+    const entityArray = [
+      ChatRoomUser.toEntity(buyerId, false, chatRoom), ChatRoomUser.toEntity(sellerId, true, chatRoom)
+    ];
+    const userList = await this.chatRoomUserRepository.save(entityArray);
+    chatRoom.chatRoomUsers = userList;
+    return chatRoom;
   }
 
 
