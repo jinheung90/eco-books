@@ -14,6 +14,9 @@ export class ChatMessage {
   @Column()
   chatRoomId: number;
 
+  @Column()
+  posId: number;
+
   @Column({length: 500})
   context: string;
 

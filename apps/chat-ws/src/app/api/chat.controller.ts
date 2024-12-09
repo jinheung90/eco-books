@@ -1,12 +1,13 @@
 import { Controller, Delete, Get, Param, Query, Req, UseGuards } from '@nestjs/common';
 import { JwtApiGuard, JwtTokenService } from '@eco-books/auth-core';
 import {
-  Authorities,
-  ChatRoomListResponse, JwtPayload,
+  Authorities, ChatPreviewDto, ChatRoomDto,
+  ChatRoomListResponse, ChatRoomUserDto, JwtPayload,
   Roles
 } from '@eco-books/type-common';
-import { ChatCacheService, ChatService } from '@eco-books/chat-core';
+import { ChatCacheService, ChatRoomUser, ChatService } from '@eco-books/chat-core';
 import { BookServiceClients } from '@eco-books/external-clients';
+import { RuntimeException } from '@nestjs/core/errors/exceptions';
 
 @Controller('chat')
 @UseGuards(JwtApiGuard)
@@ -25,15 +26,17 @@ export class ChatController {
     @Query('page') page: number,
     @Query('size') size: number
   ): Promise<ChatRoomListResponse> {
-    // 마지막 채팅을 가져온다 // 정렬해서 가져온다
-    // 채팅 방 유저 목록을 가져온다
-    // 채팅 방 목록을 가져온다
-    // 채팅 유저 목록에서 마지막으로 읽은 채팅 아이디를 가져와서 안읽은 채팅 개수를 구한다
-
+    const chatMessages = await this.chatCacheService.findAllRankedChatById(request.user.id, page, size);
+    const chatRoomIds = chatMessages.map(v => v.chatRoomId);
+    const chatRooms = await this.chatCacheService.findAllChatRoomByIdIn(chatRoomIds);
+    const chatRoomUserIds = [];
+    chatRooms.forEach(value => chatRoomUserIds.push(value.chatRoomUserIds));
+    const chatRoomUserMap = await this.chatCacheService.findChatRoomUsersThenRoomMap(chatRoomUserIds);
+    const chatCounts = await this.chatCacheService.findAllChatCountByChatRoomIdIn(chatRoomIds);
     return {
-      chatPreviewList: [
-
-      ],
+      chatPreviewList: chatMessages.map((value, index) => {
+        return ChatPreviewDto.to(value, chatRoomUserMap.get(value.chatRoomId), request.user.id, chatCounts[index]);
+      })
     };
   }
 
@@ -41,10 +44,11 @@ export class ChatController {
   @Roles(Authorities.USER)
   getPageChats(
     @Req() request: Request & { user: JwtPayload },
-    @Query('chatId') chatId: string,
+    @Param("id") id: number,
+    @Query('chatId') chatId: number,
     @Query('size') size: number
   ) {
-
+    return this.chatCacheService.getChatMessages(chatId, id, size);
   }
 
   @Delete('room/out')

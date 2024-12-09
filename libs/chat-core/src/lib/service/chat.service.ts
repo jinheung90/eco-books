@@ -29,9 +29,9 @@ export class ChatService {
     return this.dataSource.manager.transaction(async () => {
       const result = await this.getChatRoom(buyerId, userBookId);
       if(!result) {
-        return await this.saveChatRoom(buyerId, userBookId, sellerId);
+        return ChatRoom.toDto(await this.saveChatRoom(buyerId, userBookId, sellerId));
       }
-      return result.chatRoom;
+      return ChatRoom.toDto(result.chatRoom);
     });
   }
 
@@ -54,7 +54,7 @@ export class ChatService {
   async getChatRoomElseThrow(chatRoomId: number) {
     const chatRoom = await this.getChatRoomById(chatRoomId);
     if (!chatRoom) throw new RuntimeException(`not exists chatRoom id:${chatRoomId}`);
-    return ChatRoom.toDto(chatRoom);
+    return chatRoom;
   }
 
 

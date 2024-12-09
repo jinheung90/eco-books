@@ -1,10 +1,10 @@
 import { ChatMessageType } from '../../enums/chat/chat-message.type';
-import { ChatMessage } from '@eco-books/chat-core';
+
 
 export interface ChatRoomDto {
   id: number,
   userBookId: number,
-  chatRoomUserIds: number[],
+  chatRoomUsers: Array<ChatRoomUserDto>,
   createdAt: Date,
   updatedAt: Date,
 }
@@ -21,11 +21,10 @@ export interface ChatRoomUserDto {
 }
 
 export interface ChatMessageDto {
-  id: string;
+  id: number;
   userId: number;
   chatRoomId: number;
   chatMessageType: ChatMessageType;
   message: string;
   createdAt: Date;
-  saved: boolean;
 }

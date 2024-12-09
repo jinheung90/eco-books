@@ -10,7 +10,7 @@ import {
 } from '@eco-books/type-common';
 import { ChatRoomUser } from '../../../src/lib/entity/chat-room-user';
 import { ConfigService } from '@nestjs/config';
-import { ChatService } from '@eco-books/chat-core';
+import { ChatService } from '../../../src/lib/service/chat.service';
 import { chatDbProvider } from '../../../src/lib/config/chat-db.provider';
 
 
@@ -37,5 +37,8 @@ describe('ChatCacheService', () => {
     }).compile();
     chatService = moduleRef.get(ChatService);
   });
+
+
+
 
 });
