@@ -60,7 +60,8 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     const chatMessageDto: ChatMessageDto = {
       id: 0,
-      userId: dto.sendUserId,
+      sendUserId: dto.sendUserId,
+      sendClientId: dto.clientId,
       chatRoomId: dto.chatRoomId,
       chatMessageType: dto.chatMessageType,
       message: dto.message,
@@ -86,7 +87,7 @@ export class ChatWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       );
       const chatRoomDao = ChatRoomDao.fromEntity(chatRoom);
       this.chatCacheService.saveChatRoom(chatRoomDao);
-  }
+    }
 
     client.join(this.ROOM_ID_PREFIX + chatRoomDto.id);
     return ;

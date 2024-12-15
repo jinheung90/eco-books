@@ -54,6 +54,7 @@
     "jest-environment-node": "^29.7.0",
     "nx": "19.8.3",
     "prettier": "^2.6.2",
+    "socket.io-client": "^4.8.1",
     "ts-jest": "^29.1.0",
     "ts-node": "10.9.1",
     "tslib": "^2.3.0",

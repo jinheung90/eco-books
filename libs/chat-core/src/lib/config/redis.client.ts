@@ -102,7 +102,6 @@ export class RedisClient {
       )
       .on('connect', () => this.logger.log('connect redis'))
       .connect();
-9
   }
 
   protected getRedisClient() {

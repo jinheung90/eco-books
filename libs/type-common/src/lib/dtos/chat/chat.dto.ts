@@ -5,6 +5,5 @@ export interface ChatDto {
   chatMessageType: ChatMessageType,
   clientId: string,
   sendUserId: number,
-  chatRoomUserId: number,
   chatRoomId: number
 }

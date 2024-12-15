@@ -10,7 +10,7 @@ export class JwtApiGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
 
     const request = context.switchToHttp().getRequest();
-    const headers = request.getRequest().headers;
+    const headers = request.headers;
     const rawToken = headers['Authorization'];
 
     if(!rawToken) {

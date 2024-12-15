@@ -22,7 +22,8 @@ export interface ChatRoomUserDto {
 
 export interface ChatMessageDto {
   id: number;
-  userId: number;
+  sendClientId: string;
+  sendUserId: number;
   chatRoomId: number;
   chatMessageType: ChatMessageType;
   message: string;
